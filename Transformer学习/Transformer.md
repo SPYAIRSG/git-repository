@@ -4,10 +4,10 @@
 Encoders由n个结构上完全相同（参数上不是）的encoder组成，Decoders由n个结构上完全相同的decoder组成。
 
 - transformer整体结构
-![](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/transformer%E7%BB%93%E6%9E%84.png)
+![image](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/transformer%E7%BB%93%E6%9E%84.png)
 
 ### 1)Encoder-编码器
-![](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/Encoder.png)
+![image](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/Encoder.png)
 - 1.输入部分
 
 1.1 Embedding
@@ -21,19 +21,19 @@ Encoders由n个结构上完全相同（参数上不是）的encoder组成，Deco
 
 2.1 基本的注意力机制
 
-![](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/Attention%E6%9C%BA%E5%88%B6.png)
+![iamge](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/Attention%E6%9C%BA%E5%88%B6.png)
 
 2.2 Transformer中的注意力
 
-![](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/TRM%E4%B8%AD%E7%9A%84%E6%B3%A8%E6%84%8F%E5%8A%9B.png)
+![image](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/TRM%E4%B8%AD%E7%9A%84%E6%B3%A8%E6%84%8F%E5%8A%9B.png)
 
     其中W_q，W_k,W_v是可学习的参数。
 -3 残差和LayNorm
-![](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/%E6%AE%8B%E5%B7%AE%E8%AF%A6%E8%A7%A3.png)
+![image](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/%E6%AE%8B%E5%B7%AE%E8%AF%A6%E8%A7%A3.png)
 
 ### 2)Decoder-解码器
 
-![](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/Decoder.png)
+![image](https://github.com/SGmitJay/git-repository/blob/master/Transformer%E5%AD%A6%E4%B9%A0/Decoder.png)
 
 - 1.多头注意力机制
 
