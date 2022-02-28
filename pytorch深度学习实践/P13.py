@@ -5,6 +5,8 @@ from torch.nn.utils.rnn import pack_padded_sequence
 from torch.utils.data import Dataset, DataLoader
 import gzip
 import csv
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Parameters
 hidden_size = 100
@@ -12,7 +14,8 @@ batch_size = 256
 n_layers = 2
 n_epoch = 100
 n_chars = 128
-USE_GPU = True
+n_country = 18
+USE_GPU = False
 
 
 class NameDataset(Dataset):
@@ -28,8 +31,8 @@ class NameDataset(Dataset):
         self.country_dict = self.getCountryDict()
         self.country_num = len(self.country_list)
 
-    def __getitem__(self, item):
-        return self.names[item], self.country_dict[self.countries[item]]
+    def __getitem__(self, index):
+        return self.names[index], self.country_dict[self.countries[index]]
 
     def __len__(self):
         return self.len
@@ -38,7 +41,7 @@ class NameDataset(Dataset):
         # CountryDict = {self.country_list[i]: i for i in self.country_num}
         country_dict = dict()
         for idx, country_name in enumerate(self.country_list):
-            country_dict[idx] = country_name
+            country_dict[country_name] = idx
         return country_dict
 
     def idx2country(self, index):
@@ -118,23 +121,20 @@ def make_tensors(names, countries):
 
     return create_tensor(seq_tensor), create_tensor(seq_lengths), create_tensor(countries)
 
-model = RNNClassifier(input_size=n_chars, hidden_size=hidden_size, output_size=output_size)
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+
 
 def train():
     total_loss = 0.0
     for i, (names, countries) in enumerate(train_loader):
         inputs, seq_lengths, target = make_tensors(names, countries)
-        outputs = model(inputs, seq_lengths)
+        outputs = classifier(inputs, seq_lengths)
         loss = criterion(outputs, target)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
         total_loss += loss.item()
-        if i % 10 == 0:
-            print(f'loss={total_loss/(i*len(inputs))}')
+
     return total_loss
 
 def test():
@@ -144,14 +144,36 @@ def test():
     with torch.no_grad():
         for i, (names, countries) in enumerate(test_loader):
             inputs, seq_lengths, target = make_tensors(names, countries)
-            outputs = model(inputs, seq_lengths)
+            outputs = classifier(inputs, seq_lengths)
             pred = outputs.max(dim=-1, keepdim=True)[1]
             correct += pred.eq(target.view_as(pred)).sum().item()
-        percent = '%.2f' %(100*correct/total)
-        print(f'Test set: Accuracy {correct}/{total} {percent}%')
+        # percent = '%.2f' %(100*correct/total)
+        # print(f'Test set: Accuracy {correct}/{total} {percent}%')
 
     return correct/total
 
+if __name__ == '__main__':
+    classifier = RNNClassifier(n_chars, hidden_size, n_country, n_layers)
+    if USE_GPU:
+        device = torch.device("cuda:0")
+        classifier.to(device)
 
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(classifier.parameters(), lr=0.001)
 
+    print("Training for %d epochs..." % n_epoch)
+    acc_list = []
+    for epoch in range(1, n_epoch+1):
+        total_loss = train()
+        print("epoch %d, total loss: %.4f" % (epoch, total_loss))
+        acc = test()
+        print("epoch %d, acc: %.4f" % (epoch, acc))
+        acc_list.append(acc)
+
+    epoch_list = np.arange(1, n_epoch+1)
+    plt.plot(epoch_list, acc_list)
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.grid()
+    plt.show()
 
